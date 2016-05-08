@@ -1,20 +1,27 @@
-a.out : main.o RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o
-	g++ main.o RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o -W -Wall -Werror -pedantic -ansi -o a.out
-main.o : main.cpp Command.h RShell.h CompositeCommand.h Connector.h LeafCommand.h SemiColon.h Ors.h Ands.h CmdExecutor.h
-	g++ -W -Wall -Werror -pedantic -ansi -c main.cpp 
-RShell.o : RShell.cpp RShell.h Command.h CompositeCommand.h Connector.h LeafCommand.h SemiColon.h Ors.h Ands.h Exit.h
-	g++ -W -Wall -Werror -pedantic -ansi -c RShell.cpp
-CompositeCommand.o : CompositeCommand.cpp CompositeCommand.h Command.h
-	g++ -W -Wall -Werror -pedantic -ansi -c CompositeCommand.cpp
-LeafCommand.o : LeafCommand.cpp LeafCommand.h Command.h CmdExecutor.h Exit.h
-	g++ -W -Wall -Werror -pedantic -ansi -c LeafCommand.cpp
-Ors.o : Ors.cpp Ors.h Connector.h Command.h
-	g++ -W -Wall -Werror -pedantic -ansi -c Ors.cpp
-Ands.o : Ands.cpp Ands.h Connector.h Command.h
-	g++ -W -Wall -Werror -pedantic -ansi -c Ands.cpp
-SemiColon.o : SemiColon.cpp SemiColon.h Connector.h Command.h
-	g++ -W -Wall -Werror -pedantic -ansi -c SemiColon.cpp
-Executable.o : Executable.cpp Executable.h LeafCommand.h
-	g++ -W -Wall -Werror -pedantic -ansi -c Executable.cpp
-Exit.o : Exit.cpp Exit.h BuiltIn.h Command.h
-	g++ -W -Wall -Werror -pedantic -ansi -c Exit.cpp
+#Variables used for creating "rshell" executable
+COMPILE = g++
+FLAGS = -Wall -Werror -ansi -pedantic
+OBJS = RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o
+
+#type "make all" to create all .o files and "rshell" executable
+all: rshell
+
+#Create "rshell" executable
+rshell:
+	#Compile into .o files
+	#Compile into executable called "rshell"
+	#Create directory called "bin" and move all .o files and "rshell" executable to "bin"
+	$(COMPILE) $(FLAGS) -c src/RShell.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/CompositeCommand.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/LeafCommand.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/Ors.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/Ands.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/SemiColon.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/Executable.cpp &&\
+	$(COMPILE) $(FLAGS) -c src/Exit.cpp &&\
+	$(COMPILE) $(FLAGS) -o rshell src/main.cpp $(OBJS) &&\
+	if [ ! -d bin ]; then mkdir bin; fi && mv rshell bin && mv $(OBJS) bin 
+	
+#type "make clean" to delete all .o files, the "rshell" executable, and the "bin" directory	
+clean: 
+	rm -rf *~ bin
