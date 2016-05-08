@@ -1,5 +1,5 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/RShell.p
+/// @file Assignment 2/RShell.cpp
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
 /// @date <April 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
@@ -22,22 +22,25 @@
 
 using namespace std;
 
+//Constructor
 RShell::RShell()
 {
     cmd = new CompositeCommand();
 }
 
+//Display the shell prompt 
 void RShell::display()
 {
     char *login;
     char *hostname = new char[1000]();
     string commandStr = "$";
 
-    //login = getuid();
+    //get user login
     login = getlogin();
 
+    //get the hostname and print the prompt
     if(!gethostname(hostname, 1000) && login)
-        commandStr = string(login) + "@" + string(hostname) + commandStr;
+        commandStr = string(login) + string(hostname) + commandStr;
 
     cout << commandStr;
     getline(cin, cmdStr);
@@ -45,31 +48,36 @@ void RShell::display()
     delete[] hostname;
     return;
 }
+
+//Parse the string from command line and create Command objects
 void RShell::parse()
 {
-    size_t pos1, pos2, lpos1, lpos2;
+    size_t pos1, pos2, lpos1, lpos2, comment_pos, start_pos;
     string currStr, str1, str2, lstr1;
+    
+    //delete the string after the '#' for comments
+    start_pos = 0;
+    comment_pos = cmdStr.find_first_of("#", start_pos);
+    
+    setString(start_pos, comment_pos);
+    if(cmdStr.size() == 0)
+        return;
     pos1 = 0;
     pos2 = cmdStr.find_first_of(";&|", pos1);
     LeafCommand* lc;
     int set = 0;
     
+    //parse the string and create Command* objects to populate the vector in CompositeCommand
     while(pos2 != string::npos)
     {
         str1 = cmdStr.substr(pos1, (pos2 - pos1));
-        //cout << "\"" << str1 << "\"" << endl;
         trim(str1);
-        //cout << str1 << endl;
         
         lc = new LeafCommand();
         
         lpos1 = 0;
         lpos2 = str1.find_first_of(" ", lpos1);
-        cout << lpos2 <<endl;
-        //lstr1 = str1.substr(lpos1, (lpos2 - lpos1));
-        //cout << lstr1 << endl;
-        //lpos1 = lpos2 + 1;
-        //lpos2 = str1.find_first_of(" ", lpos1);
+        
         while(lpos2 != string::npos)
         {
             set = 1;
@@ -78,27 +86,29 @@ void RShell::parse()
                 lc->set_executor(new Exit());
             else
                 lc->set_executor(new Executable());
-            cout << "   arg - " << lstr1 << endl;
-            lc->addArg(const_cast<char*>(lstr1.c_str()));
+                
+            char *argC = new char[lstr1.size() + 1];
+            copy(lstr1.begin(), lstr1.end(), argC);
+            argC[lstr1.size()] = '\0';
+            lc->addArg(argC);
             lpos1 = lpos2 + 1;
             lpos2 = str1.find_first_of(" ", lpos1);
         }
+        
         lstr1 = str1.substr(lpos1);
-        //cout << lstr1 << endl;
         if(!set)
         {
             if(lstr1 == "exit")
                 lc->set_executor(new Exit());
             else
-            {
-                //cout << "here" << endl;
                 lc->set_executor(new Executable());
-            }
         }
         
-        cout << "   arg - " << lstr1 << endl;
-        lc->addArg(const_cast<char*>(lstr1.c_str()));
-        lc->addArg('\0');
+        char *argC = new char[lstr1.size() + 1];
+        copy(lstr1.begin(), lstr1.end(), argC);
+        argC[lstr1.size()] = '\0';
+        lc->addArg(argC);
+        
         static_cast<CompositeCommand*>(cmd)->addCmd(lc);
         
         str2 = cmdStr.substr(pos2, 1);
@@ -110,23 +120,18 @@ void RShell::parse()
             pos1 += 1;
         }
         
-        cout << str2 << endl;
-        Connector *con;
         if(str2 == ";")
-            con = new SemiColon();
+            static_cast<CompositeCommand*>(cmd)->addCmd(new SemiColon());
         else if(str2 == "&&")
-            con = new Ands();
-        else 
-            con = new Ors();
+            static_cast<CompositeCommand*>(cmd)->addCmd(new Ands());
+        else
+            static_cast<CompositeCommand*>(cmd)->addCmd(new Ors());
        
-        static_cast<CompositeCommand*>(cmd)->addCmd(con);     
-        //cout << "pos1: " << pos1 << ", pos2: " << pos2 << endl;
         pos2 = cmdStr.find_first_of(";&|", pos1);
-        //cout << pos2 << endl;
         set = 0;
     }
+    
     str1 = cmdStr.substr(pos1);
-    //cout << str1 << endl;
     trim(str1);
     lc = new LeafCommand();
     lpos1 = 0;
@@ -140,8 +145,12 @@ void RShell::parse()
             lc->set_executor(new Exit());
         else
             lc->set_executor(new Executable());
-        cout << "   arg - " << lstr1 << endl;
-        lc->addArg(const_cast<char*>(lstr1.c_str()));
+         
+        char *argC = new char[lstr1.size() + 1];
+        copy(lstr1.begin(), lstr1.end(), argC);
+        argC[lstr1.size()] = '\0';
+        lc->addArg(argC);
+        
         lpos1 = lpos2 + 1;
         lpos2 = str1.find_first_of(" ", lpos1);
     }
@@ -154,30 +163,31 @@ void RShell::parse()
             lc->set_executor(new Executable());
     }
     
-    cout << "   arg - " << lstr1 << endl;
-    lc->addArg(const_cast<char*>(lstr1.c_str()));
-    lc->addArg('\0');
+    char *argC = new char[lstr1.size() + 1];
+    copy(lstr1.begin(), lstr1.end(), argC);
+    argC[lstr1.size()] = '\0';
+    lc->addArg(argC);
     static_cast<CompositeCommand*>(cmd)->addCmd(lc);
-    
     return;
 }
 
+//Trims the leading and trailing spaces
 void RShell::trim(string &s)
 {
     if(s.substr(0,1) == " ")
-        {
-            //cout << "here1" << endl;
-            s = s.substr(1);
-        }
-        //cout << "\"" << str1 << "\"" << endl;
-        //cout << str1.find_last_of(" ", 0) << "size: " << str1.size() - 1 << endl;
-        if(s.substr(s.size() - 1) == " ")
-        {
-            //cout << "here2" << endl;
-            s = s.substr(0, (s.size() - 1));
-        }
+        s = s.substr(1);
+    if(s.substr(s.size() - 1) == " ")
+        s = s.substr(0, (s.size() - 1));
 }
+
+//Call the execute method on Command* object which applies recursively
 void RShell::execute()
 {
     cmd->execute();
+}
+
+//Truncate the string to remove the commented part
+void RShell::setString(size_t pos, size_t len)
+{
+    cmdStr = cmdStr.substr(pos, len);
 }

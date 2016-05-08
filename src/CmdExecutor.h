@@ -11,10 +11,7 @@
 class Command;
 class CmdExecutor{
     public:
-        /* Constructors */
-        //Sort();
-        
-        /* Pure Virtual Functions */
+        //Pure Virtual Functions 
         virtual int execute(Command *c) = 0;
 };
 #endif

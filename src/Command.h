@@ -8,20 +8,21 @@
 
 #include "CmdExecutor.h"
 
-//using namespace std;
 class CmdExecutor;
 class Command{
     public:
-        /* Constructors */
+        //virtual Destructor
+        virtual ~Command(){}
         
         void set_executor(CmdExecutor *ex)
         {
             exec = ex;
         }
-        /* Pure Virtual Functions */
+        //Pure Virtual Functions 
         virtual int execute() = 0;
         
     protected:
         CmdExecutor *exec;
 };
+
 #endif

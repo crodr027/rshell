@@ -1,40 +1,38 @@
+//  =============== BEGIN ASSESSMENT HEADER ================
+/// @file Assignment 2/CompositeCommand.cpp
+/// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
+/// @date <April 30, 2016>
+//  ================== END ASSESSMENT HEADER ===============
 #include "CompositeCommand.h"
 #include <vector>
 #include <iostream>
 using namespace std;
 
-/*
-CompositeCommand::CompositeCommand()
+//Destructor deletes all dynamically allocated vector elements
+CompositeCommand::~CompositeCommand()
 {
-    prevRetVal = 0;
+    for(vector<Command*>::iterator it = cmdList.begin(); it != cmdList.end(); ++it)
+        delete(*it);
+    cmdList.clear();
 }
-*/
+
 int CompositeCommand::execute()
 {
     int success = 0;
+    //Iterate through the cmdList vector and call execute function of each
     for(unsigned i = 0; i < cmdList.size(); i++)
     {
-        cout << "In composite command" << endl;
-        //if(dynamic_cast<LeafCommand*>(cmd))
-        /*
-        for(unsigned j = 0; j < cmdList.at(i)->argList.size(); j++)
-        {
-            cout << "\n" << endl;
-            cout << cmdList.at(i)->argList[j] << endl;
-            
-        }
-        */
         success = cmdList.at(i)->execute();
         if(success < 5)
             prevRetVal = success;
-        else if(success == 5)
+        else if(success == 5) //semi-colon
             ;
-        else if(success == 6)
+        else if(success == 6) //ands
         {
             if(prevRetVal == -1)
                 i++;
         }
-        else
+        else //ors
         {
             if(prevRetVal != -1)
                 i++;
@@ -42,6 +40,8 @@ int CompositeCommand::execute()
     }
     return success;
 }
+
+//Add command to the vector
 void CompositeCommand::addCmd(Command *c)
 {
     cmdList.push_back(c);

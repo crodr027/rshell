@@ -9,8 +9,8 @@
 #include "BuiltIn.h"
 class Exit: public BuiltIn{
     public:
-        /* Constructors */
-        
+        //virtual destructor
+        virtual ~Exit();
         int execute(Command *c);
 };
 #endif

@@ -10,8 +10,8 @@
 
 class Executable: public CmdExecutor{
     public:
-        /* Constructors */
-        
+        //Virtual destructor
+        virtual ~Executable();
         int execute(Command *c);
 };
 #endif

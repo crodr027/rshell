@@ -12,8 +12,7 @@
 class Command;
 class BuiltIn: public CmdExecutor{
     public:
-        /* Constructors */
-        
+        //pure virtual member functions
         virtual int execute(Command *c) = 0;
 };
 #endif

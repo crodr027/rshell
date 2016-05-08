@@ -9,13 +9,5 @@
 #include "Command.h"
 
 class Connector: public Command{
-    public:
-        /* Constructors */
-        
-        /* Pure Virtual Functions */
-        //virtual int execute() = 0;
-        
-    protected:
-        bool nextExecute;
 };
 #endif

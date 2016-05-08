@@ -12,12 +12,11 @@
 
 class LeafCommand: public Command{
     public:
-        /* Constructors */
+        //Constructor
         LeafCommand();
-        //void set_executor(CmdExecutor *ex);
-        /* Pure Virtual Functions */
+        //Destructor
+        ~LeafCommand();
         int execute();
-        
         void addArg(char* c);
         
     //public:

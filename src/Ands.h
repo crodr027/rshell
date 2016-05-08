@@ -10,9 +10,6 @@
 
 class Ands: public Connector{
     public:
-        /* Constructors */
-        
-        /* Pure Virtual Functions */
         int execute();
 };
 #endif

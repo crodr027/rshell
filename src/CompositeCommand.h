@@ -9,10 +9,11 @@
 #include "Command.h"
 #include <vector>
 
+//Derived class of Command
 class CompositeCommand: public Command{
+    //Destructor
+    ~CompositeCommand();
     public:
-        /* Constructors */
-        
         int execute();
         void addCmd(Command *c);
         

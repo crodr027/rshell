@@ -7,19 +7,22 @@
 #define RSHELL_H
 
 #include <string>
+#include <cstddef>
 #include "Command.h"
 #include "CompositeCommand.h"
 
 class Command;
 class RShell{
     public:
-        /* Constructors */
+        //Constructors 
         RShell();
 
+        //member functions
         void display();
         void parse();
         void trim(std::string &s);
         void execute();
+        void setString(size_t pos, size_t len);
         
     private:
         Command *cmd;
