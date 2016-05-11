@@ -5,7 +5,7 @@ ___
 ####Authors:
 Haripriya Vasireddy, Carolina Rodriguez
 ___
-**RSHELL** is a command shell written in C++ programming language. It executes commands in the PATH of underlying bash and a builtin command 'exit'. Features execution of single commands and multiple commands separated by ';'  '&&' or '||'.
+**RSHELL** is a command shell written in C++ programming language. It executes commands in the PATH of underlying bash and a builtin command 'exit'. Features execution of single commands and multiple commands separated by ';'  '&&' or '||'. The rshell prompt is displayed with login and hostname if available.
 ___
 **Execution:** In rshell directory, run $make
 
