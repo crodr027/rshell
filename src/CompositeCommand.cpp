@@ -23,18 +23,18 @@ int CompositeCommand::execute()
     for(unsigned i = 0; i < cmdList.size(); i++)
     {
         success = cmdList.at(i)->execute();
-        if(success < 5)
+        if(success >= 0)
             prevRetVal = success;
-        else if(success == 5) //semi-colon
+        else if(success == -5) //semi-colon
             ;
-        else if(success == 6) //ands
+        else if(success == -6) //ands
         {
-            if(prevRetVal == -1)
+            if(prevRetVal > 0)
                 i++;
         }
         else //ors
         {
-            if(prevRetVal != -1)
+            if(prevRetVal == 0)
                 i++;
         }
     }

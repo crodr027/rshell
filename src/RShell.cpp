@@ -40,7 +40,7 @@ void RShell::display()
 
     //get the hostname and print the prompt
     if(!gethostname(hostname, 1000) && login)
-        commandStr = string(login) + string(hostname) + commandStr;
+        commandStr = string(login) + "@" + string(hostname) + commandStr;
 
     cout << commandStr;
     getline(cin, cmdStr);
@@ -96,6 +96,7 @@ void RShell::parse()
         }
         
         lstr1 = str1.substr(lpos1);
+            
         if(!set)
         {
             if(lstr1 == "exit")
@@ -112,6 +113,7 @@ void RShell::parse()
         static_cast<CompositeCommand*>(cmd)->addCmd(lc);
         
         str2 = cmdStr.substr(pos2, 1);
+        
         pos1 = pos2 + 1;
         
         if(str2 != ";")
@@ -131,43 +133,46 @@ void RShell::parse()
         set = 0;
     }
     
-    str1 = cmdStr.substr(pos1);
-    trim(str1);
-    lc = new LeafCommand();
-    lpos1 = 0;
-    lpos2 = str1.find_first_of(" ", lpos1);
-
-    while(lpos2 != string::npos)
+    if((pos2 != string::npos) || (pos1 < cmdStr.size()))
     {
-        set = 1;
-        lstr1 = str1.substr(lpos1, (lpos2 - lpos1));
-        if(lstr1 == "exit")
-            lc->set_executor(new Exit());
-        else
-            lc->set_executor(new Executable());
-         
+        str1 = cmdStr.substr(pos1);
+        trim(str1);
+        lc = new LeafCommand();
+        lpos1 = 0;
+        lpos2 = str1.find_first_of(" ", lpos1);
+    
+        while(lpos2 != string::npos)
+        {
+            set = 1;
+            lstr1 = str1.substr(lpos1, (lpos2 - lpos1));
+            if(lstr1 == "exit")
+                lc->set_executor(new Exit());
+            else
+                lc->set_executor(new Executable());
+             
+            char *argC = new char[lstr1.size() + 1];
+            copy(lstr1.begin(), lstr1.end(), argC);
+            argC[lstr1.size()] = '\0';
+            lc->addArg(argC);
+            
+            lpos1 = lpos2 + 1;
+            lpos2 = str1.find_first_of(" ", lpos1);
+        }
+        lstr1 = str1.substr(lpos1);
+        if(!set)
+        {
+            if(lstr1 == "exit")
+                lc->set_executor(new Exit());
+            else
+                lc->set_executor(new Executable());
+        }
+        
         char *argC = new char[lstr1.size() + 1];
         copy(lstr1.begin(), lstr1.end(), argC);
         argC[lstr1.size()] = '\0';
         lc->addArg(argC);
-        
-        lpos1 = lpos2 + 1;
-        lpos2 = str1.find_first_of(" ", lpos1);
+        static_cast<CompositeCommand*>(cmd)->addCmd(lc);
     }
-    lstr1 = str1.substr(lpos1);
-    if(!set)
-    {
-        if(lstr1 == "exit")
-            lc->set_executor(new Exit());
-        else
-            lc->set_executor(new Executable());
-    }
-    
-    char *argC = new char[lstr1.size() + 1];
-    copy(lstr1.begin(), lstr1.end(), argC);
-    argC[lstr1.size()] = '\0';
-    lc->addArg(argC);
-    static_cast<CompositeCommand*>(cmd)->addCmd(lc);
     return;
 }
 

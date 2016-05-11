@@ -8,5 +8,5 @@
 //Return a value identifying the type of connector
 int Ors::execute()
 {
-    return 7;
+    return -7;
 }

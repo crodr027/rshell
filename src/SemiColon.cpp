@@ -8,5 +8,5 @@
 //Return a value identifying the type of connector
 int SemiColon::execute()
 {
-    return 5;
+    return -5;
 }
