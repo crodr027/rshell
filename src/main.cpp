@@ -10,10 +10,14 @@ using namespace std;
 //Launch the program by creating RShell object and calling its methods
 int main()
 {
-    RShell rs;
-    rs.display();
-    rs.parse();
+    while(1)
+    {
+        RShell rs;
+        rs.display();
+        rs.parse();
 
-    rs.execute();
+        rs.execute();
+    }
+    
     return 0;
 }

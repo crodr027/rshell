@@ -8,5 +8,5 @@
 //Return a value identifying the type of connector
 int Ands::execute()
 {
-    return 6;
+    return -6;
 }

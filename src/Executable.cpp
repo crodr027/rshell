@@ -14,19 +14,19 @@
 #include <stdio.h>
 #include <iostream>
 #include <sys/wait.h>
+#include <cerrno>
 using namespace std;
 //Destructor
 Executable::~Executable(){}
 
 int Executable::execute(Command *c)
 {
+    //errno = 0;
     char **arg = new char*[static_cast<LeafCommand*>(c)->argList->size() + 1];
     copy(static_cast<LeafCommand*>(c)->argList->begin(), static_cast<LeafCommand*>(c)->argList->end(), arg);
     arg[static_cast<LeafCommand*>(c)->argList->size()] = '\0';
     
     pid_t pid;
-    //int f_status = 0;
-    int evp_status = 0;
     int status;
     
     //fork
@@ -34,9 +34,9 @@ int Executable::execute(Command *c)
     if (pid < 0) //fork failure
         ;
     else if (pid == 0) //child process
-        evp_status = execvp(*arg, arg);
+        execvp(*arg, arg);
     else //parent waiting for the child
         waitpid(pid, &status, 0);
         
-    return evp_status;
+    return status;
 }
