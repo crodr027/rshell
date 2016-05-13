@@ -41,7 +41,7 @@ void RShell::display()
     //get the hostname and print the prompt
     if(!gethostname(hostname, 1000) && login)
         commandStr = string(login) + "@" + string(hostname) + commandStr;
-
+    
     cout << commandStr;
     getline(cin, cmdStr);
 
@@ -59,9 +59,12 @@ void RShell::parse()
     start_pos = 0;
     comment_pos = cmdStr.find_first_of("#", start_pos);
     
-    setString(start_pos, comment_pos);
+    if(comment_pos != string::npos)
+        setString(start_pos, comment_pos);
+    
     if(cmdStr.size() == 0)
         return;
+        
     pos1 = 0;
     pos2 = cmdStr.find_first_of(";&|", pos1);
     LeafCommand* lc;
@@ -73,6 +76,7 @@ void RShell::parse()
         str1 = cmdStr.substr(pos1, (pos2 - pos1));
         trim(str1);
         
+        //cout << str1 <<endl;
         lc = new LeafCommand();
         
         lpos1 = 0;
@@ -82,6 +86,7 @@ void RShell::parse()
         {
             set = 1;
             lstr1 = str1.substr(lpos1, (lpos2 - lpos1));
+            
             if(lstr1 == "exit")
                 lc->set_executor(new Exit());
             else
@@ -92,11 +97,15 @@ void RShell::parse()
             argC[lstr1.size()] = '\0';
             lc->addArg(argC);
             lpos1 = lpos2 + 1;
+            
+            while(lpos1 < (str1.size() - 1) && str1.substr(lpos1, 1) == " ")
+                lpos1++;
+            
             lpos2 = str1.find_first_of(" ", lpos1);
         }
         
         lstr1 = str1.substr(lpos1);
-            
+        
         if(!set)
         {
             if(lstr1 == "exit")
@@ -137,6 +146,7 @@ void RShell::parse()
     {
         str1 = cmdStr.substr(pos1);
         trim(str1);
+        //cout << str1 <<endl;
         lc = new LeafCommand();
         lpos1 = 0;
         lpos2 = str1.find_first_of(" ", lpos1);
@@ -145,6 +155,7 @@ void RShell::parse()
         {
             set = 1;
             lstr1 = str1.substr(lpos1, (lpos2 - lpos1));
+            
             if(lstr1 == "exit")
                 lc->set_executor(new Exit());
             else
@@ -156,6 +167,9 @@ void RShell::parse()
             lc->addArg(argC);
             
             lpos1 = lpos2 + 1;
+            while(lpos1 < (str1.size() - 1) && str1.substr(lpos1, 1) == " ")
+                lpos1++;
+            
             lpos2 = str1.find_first_of(" ", lpos1);
         }
         lstr1 = str1.substr(lpos1);
@@ -179,11 +193,40 @@ void RShell::parse()
 //Trims the leading and trailing spaces
 void RShell::trim(string &s)
 {
-    if(s.substr(0,1) == " ")
-        s = s.substr(1);
-    if(s.substr(s.size() - 1) == " ")
-        s = s.substr(0, (s.size() - 1));
+    //size_t len1, len2;
+    
+    size_t len1 = 0, len2 = 1;
+    
+    if(s.substr(len1, len2) == " " && s.size() > 0)
+    {
+        len1++;
+        
+        while(s.substr(len1, len2) == " " && s.size() > 0)
+            len1++;
+            
+        s = s.substr(len1);
+    }
+    /*
+    len1 = s.size() - 2;
+    if(s.substr(len1, len2) == " " && len1 > 0)
+    {
+        while(s.substr(len1, len2) == " " && len1 > 0)
+            len1--;
+    }
+    len1++;
+    s = s.substr(0, len1);
+    */
+    
+    len1 = s.size() - 1;
+    if(s.substr(len1, len2) == " ")
+    {
+        while(s.substr(len1, len2) == " ")
+            len1--;
+    }
+    len1++;
+    s = s.substr(0, len1);
 }
+
 
 //Call the execute method on Command* object which applies recursively
 void RShell::execute()
