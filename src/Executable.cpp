@@ -22,6 +22,7 @@ Executable::~Executable(){}
 int Executable::execute(Command *c)
 {
     //errno = 0;
+    int evp_status;
     char **arg = new char*[static_cast<LeafCommand*>(c)->argList->size() + 1];
     copy(static_cast<LeafCommand*>(c)->argList->begin(), static_cast<LeafCommand*>(c)->argList->end(), arg);
     arg[static_cast<LeafCommand*>(c)->argList->size()] = '\0';
@@ -34,7 +35,13 @@ int Executable::execute(Command *c)
     if (pid < 0) //fork failure
         ;
     else if (pid == 0) //child process
-        execvp(*arg, arg);
+    {
+        evp_status = execvp(*arg, arg);
+        if(evp_status == -1)
+        {
+            cout << "command not found" << endl;
+        }
+    }
     else //parent waiting for the child
         waitpid(pid, &status, 0);
         
