@@ -33,7 +33,7 @@ void RShell::display()
 {
     char *login;
     char *hostname = new char[1000]();
-    string commandStr = "$";
+    string commandStr = "$ ";
 
     //get user login
     login = getlogin();

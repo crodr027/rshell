@@ -7,7 +7,7 @@ Haripriya Vasireddy, Carolina Rodriguez
 ___
 **RSHELL** is a command shell written in C++ programming language. It executes commands in the PATH of underlying bash and a builtin command 'exit'. Features execution of single commands and multiple commands separated by ';'  '&&' or '||'. The rshell prompt is displayed with login and hostname if available.
 ___
-**Execution:** In rshell directory, run $make all
+**Execution:** In rshell directory, run $make all or $make
 
 It creates a bin directory with an executable. Run $bin/rshell
 
@@ -22,7 +22,9 @@ ___
 **Files:**  
 Makefile, LICENSE, README.md
 ######/src:
-RShell.cpp, RShell.h, Command.h, LeafCommand.cpp, LeafCommand.h, CompositeCommand.cpp, CompositeCommand.h, Connector.h, SemiColon.cpp, SemiColon.h, Ands.cpp, Ands.h, Ors.cpp, Ors.h, CmdExecutor.h, Executable.cpp, Executable.h, Builtin.h, Exit.cpp, Exit.h
+RShell.cpp, LeafCommand.cpp, CompositeCommand.cpp, SemiColon.cpp, Ands.cpp, Ors.cpp, Executable.cpp, Exit.cpp
+######/header:  
+RShell.h, Command.h, LeafCommand.h, CompositeCommand.h, Connector.h,  SemiColon.h, Ands.h, Ors.h, CmdExecutor.h, Executable.h, Builtin.h, Exit.h 
 ######/tests:
 single_command.sh, multi_command.sh, commented_command.sh, exit.sh
 ___
@@ -34,7 +36,8 @@ $tests/single_command.sh  $tests/multi_command.sh  $tests/commented_command.sh  
 ___
 **Details:**
 fork() function call used to spawn a child process. execvp() function call executes the commans in rshell. waitpid() function is used in the parent process to wait for the child process to complete.
-
-
+___
+**Known Bugs/Errors:**
+The code does not support single connector operators such as '|' and '&'. After entering an unrecognized command, $ exit must be entered twice in order to fully exit. The program also does not support any commands not already supported by the execvp function which is described in detail here: http://linux.die.net/man/3/execvp .
 
 
