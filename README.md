@@ -38,6 +38,6 @@ ___
 fork() function call used to spawn a child process. execvp() function call executes the commans in rshell. waitpid() function is used in the parent process to wait for the child process to complete.
 ___
 **Known Bugs/Errors:**
-The code does not support single connector operators such as '|' and '&'. After entering an unrecognized command, $ exit must be entered twice in order to fully exit. The program also does not support any commands not already supported by the execvp function which is described in detail here: http://linux.die.net/man/3/execvp .
+The code does not support single connector operators such as '|' and '&'. After entering an unrecognized command, $ exit must be entered twice in order to fully exit. Entering $ echo hello#comment will only echo everything before the '#'. The program also does not support any commands not already supported by the execvp function which is described in detail here: http://linux.die.net/man/3/execvp .
 
 
