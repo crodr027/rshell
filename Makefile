@@ -1,7 +1,7 @@
 #Variables used for creating "rshell" executable
 COMPILE = g++
 FLAGS = -Wall -Werror -ansi -pedantic
-OBJS = RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o
+OBJS = RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o Test.o
 #type "make all" to create all .o files and "rshell" executable
 all: rshell
 
@@ -10,15 +10,16 @@ rshell:
 	#Compile into .o files
 	#Compile into executable called "rshell"
 	#Create directory called "bin" and move all .o files and "rshell" executable to "bin"
-	$(COMPILE) $(FLAGS) -c -I header src/RShell.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/CompositeCommand.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/LeafCommand.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/Ors.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/Ands.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/SemiColon.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/Executable.cpp &&\
-	$(COMPILE) $(FLAGS) -c -I header src/Exit.cpp &&\
-	$(COMPILE) $(FLAGS) -I header -o rshell src/main.cpp $(OBJS) &&\
+	$(COMPILE) $(FLAGS) -c -I header RShell.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header CompositeCommand.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header LeafCommand.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header Ors.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header Ands.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header SemiColon.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header Executable.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header Exit.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header Test.cpp &&\
+	$(COMPILE) $(FLAGS) -I header -o rshell main.cpp $(OBJS) &&\
 	if [ ! -d bin ]; then mkdir bin; fi && mv rshell bin && mv $(OBJS) bin 
 	
 #type "make clean" to delete all .o files, the "rshell" executable, and the "bin" directory	
