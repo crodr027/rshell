@@ -4,9 +4,11 @@
 /// @date <April 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
 #include "CompositeCommand.h"
+#include "Test.h"
 #include <vector>
 #include <iostream>
 using namespace std;
+
 
 //Destructor deletes all dynamically allocated vector elements
 CompositeCommand::~CompositeCommand()
@@ -22,6 +24,8 @@ int CompositeCommand::execute()
     //Iterate through the cmdList vector and call execute function of each
     for(unsigned i = 0; i < cmdList.size(); i++)
     {
+        //cout << "In Composite" << endl;
+        //cout << dynamic_cast<Test*>(cmdList.at(i)) << endl;
         success = cmdList.at(i)->execute();
         if(success >= 0)
             prevRetVal = success;

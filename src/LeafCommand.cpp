@@ -6,6 +6,7 @@
 #include "LeafCommand.h" 
 #include "Executable.h"
 #include "Exit.h"
+#include "Test.h"
 #include <iostream>
 using namespace std;
 
@@ -25,13 +26,17 @@ LeafCommand::~LeafCommand()
 //Call the execute method of the relevant CmdExecutor object
 int LeafCommand::execute()
 {
+    //cout << "In Leaf"  << argList->size() << endl;
     int i;
     if(dynamic_cast<Executable*>(exec))
         i = Command::exec->execute(this);
     else if(dynamic_cast<Exit*>(exec))
         i = Command::exec->execute(this);
-    //else
-        //cout << "NONE" << endl;
+    else //if(dynamic_cast<Test*>(exec))
+    {
+        //cout << "It's Test" << endl;
+        i = Command::exec->execute(this);
+    }
     return i;
 }
 //adds arguments to the argList

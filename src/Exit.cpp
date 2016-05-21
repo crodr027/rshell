@@ -7,6 +7,7 @@
 #include "LeafCommand.h"
 #include <cstdlib>
 #include <string>
+#include <iostream>
 using namespace std;
 
 //Destructor
@@ -14,6 +15,7 @@ Exit::~Exit(){}
 //Exit the shell
 int Exit::execute(Command *c)
 {
+    //cout << "in exit" << endl;
     (void)c;
     exit(0);
     return 0;

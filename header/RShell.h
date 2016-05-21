@@ -9,6 +9,7 @@
 #include <string>
 #include <cstddef>
 #include "Command.h"
+#include "LeafCommand.h"
 #include "CompositeCommand.h"
 
 class Command;
@@ -22,7 +23,9 @@ class RShell{
         void parse();
         void trim(std::string &s);
         void execute();
+        void execSet(LeafCommand* &l, std::string &ls, std::string &str);
         void setString(size_t pos, size_t len);
+        void createCompositeCommand(Command* &cmd, std::string &cmdStr);
         
     private:
         Command *cmd;
