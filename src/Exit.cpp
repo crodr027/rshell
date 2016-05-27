@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <string>
 #include <iostream>
+#include <exception>
 using namespace std;
 
 //Destructor
@@ -17,6 +18,7 @@ int Exit::execute(Command *c)
 {
     //cout << "in exit" << endl;
     (void)c;
-    exit(0);
+    //exit(0);
+    throw std::exception();
     return 0;
 }

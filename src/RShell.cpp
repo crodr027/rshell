@@ -30,6 +30,11 @@ RShell::RShell()
     cmd = new CompositeCommand();
 }
 
+RShell::~RShell()
+{
+    delete cmd;
+}
+
 //Display the shell prompt 
 void RShell::display()
 {
@@ -57,6 +62,7 @@ void RShell::parse()
     createCompositeCommand(this->cmd, this->cmdStr);
 }
 
+//Creation of CompositeCommand objects called recursively 
 void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
 {
     size_t pos1, pos2, lpos1, lpos2, comment_pos, start_pos;
@@ -64,19 +70,22 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
     stack<int> stk;
     
     start_pos = 0;
-    comment_pos = cmdStr.find_first_of("#", start_pos);
+    comment_pos = cmdStr.find_first_of("#", start_pos);//remove comment
     
     if(comment_pos != string::npos)
         setString(start_pos, comment_pos);
     
     if(cmdStr.size() == 0)
         return;
-        
+    
+    if(!matchParens(cmdStr))
+        return;
     pos1 = 0;
     pos2 = cmdStr.find_first_of(";&|(", pos1);
     LeafCommand* lc;
     int set = 0;
     
+    // Check for parentheses in leftmost position
     if(pos2 != string::npos)
     {
         if(cmdStr.substr(pos2,1) == "(")
@@ -364,4 +373,33 @@ void RShell::execSet(LeafCommand* &l, string &ls, string &str)
 void RShell::setString(size_t pos, size_t len)
 {
     cmdStr = cmdStr.substr(pos, len);
+}
+
+bool RShell::matchParens(string &str)
+{
+    stack<int> stk;
+    bool match = true;
+    for(unsigned j = 0; j < str.size(); j++)
+    {
+        if(str.substr(j, 1) == "(")
+            stk.push(j);
+        if(str.substr(j, 1) == ")")
+        {
+            if(!stk.empty())
+                stk.pop();
+            else
+            {
+                match = false;
+                cout << "syntax error near unexpected token ')'" << endl;
+                return match;
+            }
+        }
+    }
+        
+    if(!stk.empty())
+    {
+       match = false;
+       cout << "syntax error near unexpected token '('" << endl;
+    }
+    return match;
 }

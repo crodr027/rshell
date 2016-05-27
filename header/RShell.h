@@ -18,6 +18,7 @@ class RShell{
         //Constructors 
         RShell();
 
+        ~RShell();
         //member functions
         void display();
         void parse();
@@ -26,6 +27,7 @@ class RShell{
         void execSet(LeafCommand* &l, std::string &ls, std::string &str);
         void setString(size_t pos, size_t len);
         void createCompositeCommand(Command* &cmd, std::string &cmdStr);
+        bool matchParens(std::string &str);
         
     private:
         Command *cmd;

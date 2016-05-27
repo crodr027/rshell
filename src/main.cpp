@@ -5,6 +5,7 @@
 //  ================== END ASSESSMENT HEADER ===============
 #include "RShell.h"
 #include <unistd.h>
+#include <exception>
 using namespace std;
 
 //Launch the program by creating RShell object and calling its methods
@@ -16,7 +17,15 @@ int main()
         rs.display();
         rs.parse();
 
-        rs.execute();
+        try
+        {
+            rs.execute();
+        }
+        catch(const std::exception&)
+        {
+            return 1;
+        }
+    
     }
     
     return 0;

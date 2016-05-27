@@ -40,10 +40,14 @@ int Executable::execute(Command *c)
         if(evp_status == -1)
         {
             cout << "command not found" << endl;
+            status = -1;
+            _Exit(3);
         }
     }
     else //parent waiting for the child
+    {
         waitpid(pid, &status, 0);
+    }
         
     return status;
 }

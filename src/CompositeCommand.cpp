@@ -20,12 +20,11 @@ CompositeCommand::~CompositeCommand()
 
 int CompositeCommand::execute()
 {
-    int success = 0;
+    int success;
+    //int success = 0;
     //Iterate through the cmdList vector and call execute function of each
     for(unsigned i = 0; i < cmdList.size(); i++)
     {
-        //cout << "In Composite" << endl;
-        //cout << dynamic_cast<Test*>(cmdList.at(i)) << endl;
         success = cmdList.at(i)->execute();
         if(success >= 0)
             prevRetVal = success;
@@ -41,7 +40,12 @@ int CompositeCommand::execute()
             if(prevRetVal == 0)
                 i++;
         }
+        prevRetVal = success;
+        
+        //cout << i << endl;
     }
+    if(success != -1 && !(success > 0))
+        success = 0;
     return success;
 }
 
