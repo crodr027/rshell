@@ -5,39 +5,46 @@ ___
 ####Authors:
 Haripriya Vasireddy, Carolina Rodriguez
 ___
-**RSHELL** is a command shell written in C++ programming language. It executes commands in the PATH of underlying bash and a builtin command 'exit'. Features execution of single commands and multiple commands separated by ';'  '&&' or '||'. The rshell prompt is displayed with login and hostname if available.
+**RSHELL** is a command shell written in C++ programming language. It executes commands in the PATH of underlying bash and builtin commands 'exit', 'test and '[]'. The test command and its symbolic version '[]' can be executed with three flags namely, -e, -f and -d, which check if the file/directory exists, is a file and is a directory respectively. Features execution of single commands and multiple commands separated by ';'  '&&' or '||'. Allows grouping of commands by use of parentheses which takes precedence. The rshell prompt is displayed with login and hostname if available.
 ___
 **Execution:** In rshell directory, run $make all or $make
 
 It creates a bin directory with an executable. Run $bin/rshell
+Examples :
 
+$test -e src/Ands.cpp
+$test -f src/Ands.cpp
+$[ -d tests ]
+$[ -f src/Ands.cpp ]
+$(echo A || echo B) || (echo C || echo D)
 $exit     
-
 $ls -l -t -r;echo rshell&&mkdir bin||exit
+
 - Command followed by ';' is always executed.
 - Command followed by '&&' is executed only if the previous command succeeded.
 - Command followed by '||' is executed only if the previous command failed.
+- Commands grouped by parentheses take precedence
 
 ___
 **Files:**  
 Makefile, LICENSE, README.md
 ######/src:
-RShell.cpp, LeafCommand.cpp, CompositeCommand.cpp, SemiColon.cpp, Ands.cpp, Ors.cpp, Executable.cpp, Exit.cpp
+RShell.cpp, LeafCommand.cpp, CompositeCommand.cpp, SemiColon.cpp, Ands.cpp, Ors.cpp, Executable.cpp, Exit.cpp, Test.cpp
 ######/header:  
-RShell.h, Command.h, LeafCommand.h, CompositeCommand.h, Connector.h,  SemiColon.h, Ands.h, Ors.h, CmdExecutor.h, Executable.h, Builtin.h, Exit.h 
+RShell.h, Command.h, LeafCommand.h, CompositeCommand.h, Connector.h,  SemiColon.h, Ands.h, Ors.h, CmdExecutor.h, Executable.h, Builtin.h, Exit.h, Test.h 
 ######/tests:
-single_command.sh, multi_command.sh, commented_command.sh, exit.sh
+test_test.sh, precedence_test.sh, single_command.sh, multi_command.sh, commented_command.sh, exit.sh
 ___
 
 **Tests:**
 The tests folder contains bash scripts to be run from the tests folder. Examples:
 
-$tests/single_command.sh  $tests/multi_command.sh  $tests/commented_command.sh  $exit.sh
+$tests/test_test.sh  $tests/precedence_test.sh  $tests/commented_command.sh  $exit.sh
 ___
 **Details:**
-fork() function call used to spawn a child process. execvp() function call executes the commans in rshell. waitpid() function is used in the parent process to wait for the child process to complete.
+fork() function call used to spawn a child process. execvp() function call executes the commans in rshell. waitpid() function is used in the parent process to wait for the child process to complete. Builtin commands test, exit and "[]" are implemented with extensibility for newer builtin commands.
 ___
 **Known Bugs/Errors:**
-The code does not support single connector operators such as '|' and '&'. After entering an unrecognized command, $ exit must be entered twice in order to fully exit. Entering $ echo hello#comment will only echo everything before the '#'. The program also does not support any commands not already supported by the execvp function which is described in detail here: http://linux.die.net/man/3/execvp .
+The code does not support single connector operators such as '|' and '&'. Entering $ echo hello#comment will only echo everything before the '#'. The program also does not support any commands not already supported by the execvp function which is described in detail here: http://linux.die.net/man/3/execvp .
 
 
