@@ -12,6 +12,7 @@ echo A && echo B ()
 echo A && echoB) || echo C
 echo A && )(echo B
 echo A & echo B
+echo A && (echo B || echo C) && echo D
 exit
 
 EOF
