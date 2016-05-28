@@ -39,6 +39,7 @@ ___
 **Tests:**
 The tests folder contains bash scripts to be run from the "tests folder". Examples:
 Change to tests directory and run the following test scripts:
+
 $./test_test.sh  $./precedence_test.sh  $./commented_command.sh  $./exit.sh
 ___
 **Details:**
