@@ -102,6 +102,8 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
                 }
                 if(stk.empty())
                 {
+                    if(cmdStr.substr(k,1) == "(" && cmdStr.substr(k+1,1) == ")")
+                        break;
                     Command *new_cmd = new CompositeCommand();
                     string new_str = cmdStr.substr(k+1, j-k-1);
                     createCompositeCommand(new_cmd, new_str);
@@ -224,6 +226,8 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
                     }
                     if(stk.empty())
                     {
+                        if(cmdStr.substr(k,1) == "(" && cmdStr.substr(k+1,1) == ")")
+                            break;
                         Command *new_cmd = new CompositeCommand();
                         string new_str = cmdStr.substr(k+1, j-k-1);
                         createCompositeCommand(new_cmd, new_str);
