@@ -21,6 +21,10 @@
 #include "Exit.h"
 #include "Test.h"
 #include "Executable.h"
+#include "IRedirect.h"
+#include "ORedirect.h"
+#include "OARedirect.h"
+#include "Pipe.h"
 
 using namespace std;
 
@@ -66,7 +70,7 @@ void RShell::parse()
 void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
 {
     size_t pos1, pos2, lpos1, lpos2, comment_pos, start_pos;
-    string currStr, str1, str2, lstr1, newStr;
+    string currStr, str1, str2, lstr1, newStr, str3;
     stack<int> stk;
     
     start_pos = 0;
@@ -81,7 +85,7 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
     if(!matchParens(cmdStr))
         return;
     pos1 = 0;
-    pos2 = cmdStr.find_first_of(";&|(", pos1);
+    pos2 = cmdStr.find_first_of(";&|(<>", pos1);
     LeafCommand* lc;
     int set = 0;
     
@@ -110,27 +114,47 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
                     static_cast<CompositeCommand*>(cmd)->addCmd(new_cmd);
                     
                     pos1 = j + 1;
-                    pos2 = cmdStr.find_first_of(";&|(", pos1);
+                    pos2 = cmdStr.find_first_of(";&|(<>", pos1);
                     if(pos2 != string::npos)
                     {
                         str2 = cmdStr.substr(pos2, 1);
         
                         pos1 = pos2 + 1;
                         
-                        if(str2 != ";")
+                        if(str2 != ";" && str2 != "<")
                         {
-                            str2 = cmdStr.substr(pos2, 2);
-                            pos1 += 1;
+                            if(str2 == ">" || str2 == "|" )
+                            {
+                                str3 = cmdStr.substr(pos2 + 1, 1);
+                                if(str3 == ">" || str3 == "|")
+                                {
+                                    str2 = cmdStr.substr(pos2, 2);    
+                                    pos1 += 1;
+                                }
+                            }
+                            else
+                            {
+                                str2 = cmdStr.substr(pos2, 2);
+                                pos1 += 1;
+                            }
                         }
                         
                         if(str2 == ";")
                             static_cast<CompositeCommand*>(cmd)->addCmd(new SemiColon());
                         else if(str2 == "&&")
                             static_cast<CompositeCommand*>(cmd)->addCmd(new Ands());
-                        else
+                        else if(str2 == "||")
                             static_cast<CompositeCommand*>(cmd)->addCmd(new Ors());
-                       
-                        pos2 = cmdStr.find_first_of(";&|(", pos1);
+                        else if(str2 == "<")
+                            static_cast<CompositeCommand*>(cmd)->addCmd(new IRedirect());
+                        else if(str2 == ">")
+                            static_cast<CompositeCommand*>(cmd)->addCmd(new ORedirect());
+                        else if(str2 == ">>")
+                            static_cast<CompositeCommand*>(cmd)->addCmd(new OARedirect());
+                        else if(str2 == "|")
+                            static_cast<CompositeCommand*>(cmd)->addCmd(new Pipe());
+                            
+                        pos2 = cmdStr.find_first_of(";&|(<>", pos1);
                     }
                     
                     if((pos2 != string::npos) && (cmdStr.substr(pos2, 1) == "("))
@@ -195,20 +219,40 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
         
         pos1 = pos2 + 1;
         
-        if(str2 != ";")
+        if(str2 != ";" && str2 != "<")
         {
-            str2 = cmdStr.substr(pos2, 2);
-            pos1 += 1;
+            if(str2 == ">" || str2 == "|" )
+            {
+                str3 = cmdStr.substr(pos2 + 1, 1);
+                if(str3 == ">" || str3 == "|")
+                {
+                    str2 = cmdStr.substr(pos2, 2);    
+                    pos1 += 1;
+                }
+            }
+            else
+            {
+                str2 = cmdStr.substr(pos2, 2);
+                pos1 += 1;
+            }
         }
         
         if(str2 == ";")
             static_cast<CompositeCommand*>(cmd)->addCmd(new SemiColon());
         else if(str2 == "&&")
             static_cast<CompositeCommand*>(cmd)->addCmd(new Ands());
-        else
+        else if(str2 == "||")
             static_cast<CompositeCommand*>(cmd)->addCmd(new Ors());
+        else if(str2 == "<")
+            static_cast<CompositeCommand*>(cmd)->addCmd(new IRedirect());
+        else if(str2 == ">")
+            static_cast<CompositeCommand*>(cmd)->addCmd(new ORedirect());
+        else if(str2 == ">>")
+            static_cast<CompositeCommand*>(cmd)->addCmd(new OARedirect());
+        else if(str2 == "|")
+            static_cast<CompositeCommand*>(cmd)->addCmd(new Pipe());
        
-        pos2 = cmdStr.find_first_of(";&|(", pos1);
+        pos2 = cmdStr.find_first_of(";&|(<>", pos1);
         
         if(pos2 != string::npos)
         {
@@ -228,33 +272,54 @@ void RShell::createCompositeCommand(Command* &cmd, string &cmdStr)
                     {
                         if(cmdStr.substr(k,1) == "(" && cmdStr.substr(k+1,1) == ")")
                             break;
+
                         Command *new_cmd = new CompositeCommand();
                         string new_str = cmdStr.substr(k+1, j-k-1);
                         createCompositeCommand(new_cmd, new_str);
                         static_cast<CompositeCommand*>(cmd)->addCmd(new_cmd);
                         
                         pos1 = j + 1;
-                        pos2 = cmdStr.find_first_of(";&|(", pos1);
+                        pos2 = cmdStr.find_first_of(";&|(<>", pos1);
                         if(pos2 != string::npos)
                         {
                             str2 = cmdStr.substr(pos2, 1);
             
                             pos1 = pos2 + 1;
                             
-                            if(str2 != ";")
+                            if(str2 != ";" && str2 != "<")
                             {
-                                str2 = cmdStr.substr(pos2, 2);
-                                pos1 += 1;
+                                if(str2 == ">" || str2 == "|" )
+                                {
+                                    str3 = cmdStr.substr(pos2 + 1, 1);
+                                    if(str3 == ">" || str3 == "|")
+                                    {
+                                        str2 = cmdStr.substr(pos2, 2);    
+                                        pos1 += 1;
+                                    }
+                                }
+                                else
+                                {
+                                    str2 = cmdStr.substr(pos2, 2);
+                                    pos1 += 1;
+                                }
                             }
-                            
+                        
                             if(str2 == ";")
                                 static_cast<CompositeCommand*>(cmd)->addCmd(new SemiColon());
                             else if(str2 == "&&")
                                 static_cast<CompositeCommand*>(cmd)->addCmd(new Ands());
-                            else
+                            else if(str2 == "||")
                                 static_cast<CompositeCommand*>(cmd)->addCmd(new Ors());
+                            else if(str2 == "<")
+                                static_cast<CompositeCommand*>(cmd)->addCmd(new IRedirect());
+                            else if(str2 == ">")
+                                static_cast<CompositeCommand*>(cmd)->addCmd(new ORedirect());
+                            else if(str2 == ">>")
+                                static_cast<CompositeCommand*>(cmd)->addCmd(new OARedirect());
+                            else if(str2 == "|")
+                                static_cast<CompositeCommand*>(cmd)->addCmd(new Pipe());
                            
-                            pos2 = cmdStr.find_first_of(";&|(", pos1);
+                            pos2 = cmdStr.find_first_of(";&|(<>", pos1);
                         }
                         
                         if((pos2 != string::npos) && (cmdStr.substr(pos2, 1) == "("))

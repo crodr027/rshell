@@ -1,7 +1,9 @@
 #Variables used for creating "rshell" executable
 COMPILE = g++
 FLAGS = -Wall -Werror -ansi -pedantic
-OBJS = RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o Test.o
+OBJS = RShell.o CompositeCommand.o LeafCommand.o Ors.o Ands.o SemiColon.o Executable.o Exit.o Test.o\
+	   IRedirect.o ORedirect.o OARedirect.o Pipe.o OILeafCommands.o PipeCommand.o OExecutable.o\
+	   PipeExecutable.o
 #type "make all" to create all .o files and "rshell" executable
 all: rshell
 
@@ -19,6 +21,14 @@ rshell:
 	$(COMPILE) $(FLAGS) -c -I header src/Executable.cpp &&\
 	$(COMPILE) $(FLAGS) -c -I header src/Exit.cpp &&\
 	$(COMPILE) $(FLAGS) -c -I header src/Test.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/IRedirect.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/ORedirect.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/OARedirect.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/Pipe.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/OILeafCommands.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/PipeCommand.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/OExecutable.cpp &&\
+	$(COMPILE) $(FLAGS) -c -I header src/PipeExecutable.cpp &&\
 	$(COMPILE) $(FLAGS) -I header -o rshell src/main.cpp $(OBJS) &&\
 	if [ ! -d bin ]; then mkdir bin; fi && mv rshell bin && mv $(OBJS) bin 
 
