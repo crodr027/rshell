@@ -11,16 +11,27 @@ ___
 
 It creates a bin directory with an executable. Run $bin/rshell
 Examples :
+
 $cat < src/Ands.cpp
+
 $ls -a > out.txt
+
 $ls -ltr >> out.txt
+
 $cat < Ands.cpp | tr A-Z a-z | tee newFile1.txt | tr a-z A-Z > newFile2.txt
+
 $test -e src/Ands.cpp
+
 $test -f src/Ands.cpp
+
 $[ -d tests ]
+
 $[ -f src/Ands.cpp ]
+
 $(echo A || echo B) || (echo C || echo D)
-$exit     
+
+$exit
+
 $ls -l -t -r;echo rshell&&mkdir bin||exit
 
 - Command followed by ';' is always executed.
