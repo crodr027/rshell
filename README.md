@@ -37,9 +37,10 @@ test_test.sh, precedence_test.sh, single_command.sh, multi_command.sh, commented
 ___
 
 **Tests:**
-The tests folder contains bash scripts to be run from the tests folder. Examples:
+The tests folder contains bash scripts to be run from the "tests folder". Examples:
+Change to tests directory and run the following test scripts:
 
-$tests/test_test.sh  $tests/precedence_test.sh  $tests/commented_command.sh  $exit.sh
+$./test_test.sh  $./precedence_test.sh  $./commented_command.sh  $./exit.sh
 ___
 **Details:**
 fork() function call used to spawn a child process. execvp() function call executes the commans in rshell. waitpid() function is used in the parent process to wait for the child process to complete. Builtin commands test, exit and "[]" are implemented with extensibility for newer builtin commands.
