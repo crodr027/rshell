@@ -67,7 +67,28 @@ int CompositeCommand::execute()
             }
             else if(dynamic_cast<IRedirect*>(cmdList.at(i + 1)))
             {
-                if(!dynamic_cast<ORedirect*>(cmdList.at(i + 3)) && !dynamic_cast<OARedirect*>(cmdList.at(i + 3)))
+                if(cmdList.size() > (i + 3))
+                {
+                    if(dynamic_cast<ORedirect*>(cmdList.at(i + 3)) || dynamic_cast<OARedirect*>(cmdList.at(i + 3)))
+                    {
+                        OILeafCommands *oc = new OILeafCommands();
+                        oc->set_executor(new OExecutable());
+                        LeafCommand *l = static_cast<LeafCommand*>(cmdList.at(i));
+                        vector<char*>::iterator it = l->argList->begin(); 
+                        l->argList->insert(it + l->argList->size(),static_cast<LeafCommand*>(cmdList.at(i + 2))->argList->at(0));
+                        oc->argList->resize(l->argList->size());
+                        copy(l->argList->begin(),l->argList->end(),oc->argList->begin());
+                        
+                        oc->fname = static_cast<LeafCommand*>(cmdList.at(i + 4))->argList->at(0);
+                        if(dynamic_cast<ORedirect*>(cmdList.at(i + 3)))
+                            oc->type = 2;
+                        else
+                            oc->type = 3;
+                        cmdList.erase(cmdList.begin() + i, cmdList.begin() + i + 5);
+                        cmdList.insert(cmdList.begin() + i, oc);
+                    }
+                }
+                else
                 {
                     OILeafCommands *oc = new OILeafCommands();
                     oc->set_executor(new OExecutable());
@@ -78,25 +99,6 @@ int CompositeCommand::execute()
                     oc->fname = static_cast<LeafCommand*>(cmdList.at(i + 2))->argList->at(0);
                     oc->type = 1;
                     cmdList.erase(cmdList.begin() + i, cmdList.begin() + i + 3);
-                    cmdList.insert(cmdList.begin() + i, oc);
-                }
-                //if(dynamic_cast<ORedirect*>(cmdList.at(i + 1)))
-                else 
-                {
-                    OILeafCommands *oc = new OILeafCommands();
-                    oc->set_executor(new OExecutable());
-                    LeafCommand *l = static_cast<LeafCommand*>(cmdList.at(i));
-                    vector<char*>::iterator it = l->argList->begin(); 
-                    l->argList->insert(it + l->argList->size(),static_cast<LeafCommand*>(cmdList.at(i + 2))->argList->at(0));
-                    oc->argList->resize(l->argList->size());
-                    copy(l->argList->begin(),l->argList->end(),oc->argList->begin());
-                    
-                    oc->fname = static_cast<LeafCommand*>(cmdList.at(i + 4))->argList->at(0);
-                    if(dynamic_cast<ORedirect*>(cmdList.at(i + 3)))
-                        oc->type = 2;
-                    else
-                        oc->type = 3;
-                    cmdList.erase(cmdList.begin() + i, cmdList.begin() + i + 5);
                     cmdList.insert(cmdList.begin() + i, oc);
                 }
             }
