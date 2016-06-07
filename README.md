@@ -18,7 +18,7 @@ $ls -a > out.txt
 
 $ls -ltr >> out.txt
 
-$cat < Ands.cpp | tr A-Z a-z | tee newFile1.txt | tr a-z A-Z > newFile2.txt
+$cat < src/Ands.cpp | tr A-Z a-z | tee newFile1.txt | tr a-z A-Z > newFile2.txt
 
 $test -e src/Ands.cpp
 
