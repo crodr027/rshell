@@ -1,7 +1,7 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/Executable.cpp
+/// @file Assignment 2/OExecutable.cpp
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
-/// @date <April 30, 2016>
+/// @date <May 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
 
 #include "OExecutable.h"
@@ -21,19 +21,15 @@
 #include <fcntl.h>
 using namespace std;
 
+//Constructor
 OExecutable::OExecutable(){}
 //Destructor
 OExecutable::~OExecutable(){}
 
 int OExecutable::execute(Command *c)
 {
-    //int fd[2];
     const char *filename = static_cast<OILeafCommands*>(c)->fname;
     
-    //close(1);
-    //dup(fd);
-    //errno = 0;
-    //char ch = '\0';
     int evp_status;
     char **arg = new char*[static_cast<OILeafCommands*>(c)->argList->size() + 1];
     copy(static_cast<OILeafCommands*>(c)->argList->begin(), static_cast<OILeafCommands*>(c)->argList->end(), arg);

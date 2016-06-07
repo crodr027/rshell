@@ -1,5 +1,5 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/Ors.h
+/// @file Assignment 2/IRedirect.h
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
 /// @date <April 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============

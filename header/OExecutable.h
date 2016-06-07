@@ -1,7 +1,7 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/Executable.h
+/// @file Assignment 2/OExecutable.h
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
-/// @date <April 30, 2016>
+/// @date <May 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
 #ifndef O_EXECUTABLE_H
 #define O_EXECUTABLE_H

@@ -1,7 +1,7 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/CompositeCommand.cpp
+/// @file Assignment 2/PipeCommand.cpp
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
-/// @date <April 30, 2016>
+/// @date <May 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
 #include "PipeCommand.h"
 #include "LeafCommand.h"
@@ -22,6 +22,7 @@ PipeCommand::~PipeCommand()
         delete(*it);
     cmdList.clear();
 }
+
 //Add command to the vector
 void PipeCommand::addCmd(Command *c)
 {
@@ -29,6 +30,7 @@ void PipeCommand::addCmd(Command *c)
     return;
 }
 
+//Execute
 int PipeCommand::execute()
 {
     int i = Command::exec->execute(this);

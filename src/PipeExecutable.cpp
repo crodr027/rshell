@@ -1,7 +1,7 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/Executable.cpp
+/// @file Assignment 2/PipeExecutable.cpp
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
-/// @date <April 30, 2016>
+/// @date <May 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
 #include "PipeExecutable.h"
 #include "Executable.h"
@@ -22,13 +22,13 @@
 
 using namespace std;
 
+//Constructor
 PipeExecutable::PipeExecutable(){}
 //Destructor
 PipeExecutable::~PipeExecutable(){}
 
 int PipeExecutable::execute(Command *c)
 {
-    //int i;
     pid_t pid;
     int fd [2];
     int in_fd = 0;
@@ -41,6 +41,8 @@ int PipeExecutable::execute(Command *c)
     
     int save_stdin = dup(0);
     int save_stdout = dup(1);
+
+    //Loop through all piped commands except the last
     while(i < (static_cast<PipeCommand*>(c)->cmdList.size() - 1))
     {
         Command *nc = static_cast<PipeCommand*>(c)->cmdList.at(i);
@@ -63,9 +65,9 @@ int PipeExecutable::execute(Command *c)
         pipe (fd);
 
         pid = fork();
-        if(pid == 0)
+        if(pid == 0)  //child process
         {
-            //close(1);
+            //If output or input redirection command open file to read or write and assign file descriptors
             if(oi_command)
             {
                 if(static_cast<OILeafCommands*>(nc)->type == 1)
@@ -108,10 +110,19 @@ int PipeExecutable::execute(Command *c)
                 }
             }
             
+            //Execute the command
             evp_status = execvp(*arg, arg);
-            cout << evp_status << endl;
+            if(evp_status == -1)
+            {
+                cout << "command not found" << endl;
+                status = -1;
+                _Exit(3);
+            }
+            else
+                ;
+
         }
-        else
+        else  //Parent process
         {
             waitpid(pid, &status, 0);   
             close (fd [1]);
@@ -121,10 +132,11 @@ int PipeExecutable::execute(Command *c)
         
         i++;
     }
+
+    //Handle last command
     if(i <static_cast<PipeCommand*>(c)->cmdList.size())
     {
         Command *nc = static_cast<PipeCommand*>(c)->cmdList.at(i);
-        //int evp_status;
         if(dynamic_cast<OILeafCommands*>(nc))
         {
             arg = new char*[static_cast<OILeafCommands*>(nc)->argList->size() + 1];
@@ -143,7 +155,7 @@ int PipeExecutable::execute(Command *c)
         
         pipe(fd);
         pid = fork();
-        if(pid == 0)
+        if(pid == 0)  //Child process
         {
             if(in_fd != 0)
             {
@@ -165,17 +177,24 @@ int PipeExecutable::execute(Command *c)
                     close(fd[1]);
             	}
             }
-            //cout << "Before final execute" << endl;
+         
+            //Execute;
             evp_status = execvp(*arg, arg);
-            cout << evp_status << endl;
+            if(evp_status == -1)
+            {
+                cout << "command not found" << endl;
+                status = -1;
+                _Exit(3);
+            }
+            else
+                ;
         }
-        else
+        else  //Parent process
         {
             waitpid(pid, &status, 0);   
             close (fd [1]);
             close (fd [0]);
             close(in_fd);
-            //cout << "Ending Parent" << endl;
             dup2(save_stdin, 0);
             dup2(save_stdout, 1);
         }

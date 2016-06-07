@@ -1,7 +1,7 @@
 //  =============== BEGIN ASSESSMENT HEADER ================
-/// @file Assignment 2/Ors.h
+/// @file Assignment 2/OARedirect.h
 /// @author <Haripriya Vasireddy> [hvasi001@ucr.edu]
-/// @date <April 30, 2016>
+/// @date <May 30, 2016>
 //  ================== END ASSESSMENT HEADER ===============
 #ifndef OAREDIRECT_H
 #define OAREDIRECT_H
